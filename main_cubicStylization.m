@@ -1,16 +1,36 @@
 clear all; close all;
 addpath('./utils')
 
-[V,F] = readOBJ('spot.obj');
+% read mesh
+[V,F] = load_mesh('spot.obj');
 nV = size(V,1);
 
-% precomputation
-U = V; % output vertex positions
-data = precomputation(V,F);
-data.lambda = 4e-1; % cubeness
+%% Precomputation
+% ADMM rotation fitting precomputation
+rotData.V = V;
+rotData.F = F;
+rotData.N = per_vertex_normals(V,F); % input vertex normal
+rotData.L = cotmatrix(V,F); % cotangent 
+rotData.VA = full(diag(massmatrix(V,F))); % vertex area
 
-% optimization 
-tolerance = 5e-4;
+% ADMM rotation fitting parameters
+rotData.lambda = 4e-1; % cubeness
+rotData.rho = 1e-4;
+rotData.ABSTOL = 1e-5;
+rotData.RELTOL = 1e-3;
+rotData.mu = 5;
+rotData.tao = 2; 
+rotData.maxIter_ADMM = 100;
+
+% ARAP precomputation
+ARAPData.L = cotmatrix(V,F); % cotangent 
+ARAPData.preF = []; % prefactorization of L
+[~,ARAPData.K] = arap_rhs(V,F,[],'Energy','spokes-and-rims');
+U = V; % output vertex positions
+
+%% Optimization
+% optimization parameters
+tolerance = 1e-3;
 maxIter = 500;
 b = 1000; % we have to pin down at least one vertex
 bc = U(b,:);
@@ -22,7 +42,7 @@ UHis(:,:,1) = U;
 for iter = 1:maxIter
     
     % local step
-    [RAll, objVal, data] = fitRotationL1(U, data);
+    [RAll, objVal, rotData] = fitRotationL1(U, rotData);
     
     % save optimization info
     objHis = [objHis objVal];
@@ -30,10 +50,10 @@ for iter = 1:maxIter
     
     % global step
     Rcol = reshape(permute(RAll,[3 1 2]),nV*3*3, 1);
-    Bcol = data.K * Rcol;
+    Bcol = ARAPData.K * Rcol;
     B = reshape(Bcol,[size(Bcol,1)/3 3]);
     UPre = U;
-    [U,data.preF] = min_quad_with_fixed(data.L/2,B,b,bc,[],[],data.preF);
+    [U,ARAPData.preF] = min_quad_with_fixed(ARAPData.L/2,B,b,bc,[],[],ARAPData.preF);
     
 %     % plot
 %     if mod(iter-1,1) == 0
@@ -57,9 +77,9 @@ for iter = 1:maxIter
     end
 end
 
-outFolder = './results/';
-mkdir(outFolder)
-for ii = 1:length(objHis)
-    meshName = strcat(outFolder,num2str(ii,'%03.f'),'.obj');
-    writeOBJ(meshName,UHis(:,:,ii),F);
-end
+% outFolder = './results/';
+% mkdir(outFolder)
+% for ii = 1:length(objHis)
+%     meshName = strcat(outFolder,num2str(ii,'%03.f'),'.obj');
+%     writeOBJ(meshName,UHis(:,:,ii),F);
+% end

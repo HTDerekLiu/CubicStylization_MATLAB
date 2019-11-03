@@ -1,20 +1,53 @@
-function [RAll, objVal, data] = fitRotationL1(U, data)
-V = data.V;
-F = data.F;
-RAll = zeros(3,3,size(V,1)); % all rotation
+function [RAll, objVal, rotData] = fitRotationL1(U, rotData)
+%{
+    FITROTATIONL1 solves the following problem
+    for each vertex i
+    Ri ? argmin Wi/2 ||Ri*dVi - dUi||^2_F + ? VAi || Ri*ni||_1
+    where R is a rotation matrix
+    
+    Reference:
+    Liu & Jacobson, "Cubic Stylization", 2019 (Section 3.1)
+%}
+
+nV = size(U,1);
+RAll = zeros(3,3,nV); % all rotation
 objVal = 0;
 
-for ii = 1:size(V,1)
+% initialization (warm start for consecutive iterations)
+if ~isfield(rotData, 'zAll')
+    rotData.zAll = zeros(3,nV);
+    rotData.uAll = zeros(3,nV);
+    rotData.rhoAll = rotData.rho * ones(nV,1);
+    
+    adjFList = vertexFaceAdjacencyList(rotData.F);
+    rotData.hEList = cell(nV,1); % half edge lise
+    rotData.WList = cell(nV,1); % wieght matrix W
+    rotData.dVList = cell(nV,1); % dV spokes and rims
+    for ii = 1:nV
+        adjF = adjFList{ii};
+        hE = [rotData.F(adjF,1) rotData.F(adjF,2); ...
+              rotData.F(adjF,2) rotData.F(adjF,3); ...
+              rotData.F(adjF,3) rotData.F(adjF,1)];
+        idx = sub2ind(size(rotData.L), hE(:,1), hE(:,2));
+        
+        rotData.hEList{ii} = hE;
+        rotData.WList{ii} = diag(full(rotData.L(idx)));
+        rotData.dVList{ii} = (rotData.V(hE(:,2),:) - rotData.V(hE(:,1),:))';
+    end
+end
+
+% start rotation fitting with ADMM
+for ii = 1:nV
     % warm start parameters
-    z = data.zAll(:,ii);
-    u = data.uAll(:,ii);
-    n = data.N(ii,:)';
-    rho = data.rhoAll(ii);
+    z = rotData.zAll(:,ii);
+    u = rotData.uAll(:,ii);
+    n = rotData.N(ii,:)';
+    rho = rotData.rhoAll(ii);
 
     % get geometry params
-    hE = data.hEList{ii};
-    W = data.WList{ii};
-    dV = data.dVList{ii};
+    hE = rotData.hEList{ii};
+    W = rotData.WList{ii};
+    dV = rotData.dVList{ii};
     dU = (U(hE(:,2),:) - U(hE(:,1),:))';
     Spre = dV * W * dU';
 
@@ -26,7 +59,7 @@ for ii = 1:size(V,1)
 
         % z step
         zOld = z;
-        z = shrinkage(R*n+u, data.lambda*data.VA(ii)/rho);
+        z = shrinkage(R*n+u, rotData.lambda*rotData.VA(ii)/rho);
 
         % u step
         u = u + R*n - z;
@@ -36,27 +69,27 @@ for ii = 1:size(V,1)
         s_norm = norm(-rho * (z - zOld)); % dual
 
         % rho step
-        if r_norm > data.mu * s_norm
-            rho = data.tao * rho;
-            u = u / data.tao;
-        elseif s_norm > data.mu * r_norm
-            rho = rho / data.tao;
-            u = u * data.tao;
+        if r_norm > rotData.mu * s_norm
+            rho = rotData.tao * rho;
+            u = u / rotData.tao;
+        elseif s_norm > rotData.mu * r_norm
+            rho = rho / rotData.tao;
+            u = u * rotData.tao;
         end
 
         % check stopping criteria
         numEle = length(z);
-        eps_pri =  sqrt(numEle*2)*data.ABSTOL + data.RELTOL*max(norm(R*n),norm(z));
-        eps_dual = sqrt(numEle)*data.ABSTOL + data.RELTOL*norm(rho*u);
+        eps_pri =  sqrt(numEle*2)*rotData.ABSTOL + rotData.RELTOL*max(norm(R*n),norm(z));
+        eps_dual = sqrt(numEle)*rotData.ABSTOL + rotData.RELTOL*norm(rho*u);
         if (r_norm<eps_pri && s_norm<eps_dual)
             % save parameters for future warm start
-            data.zAll(:,ii) = z;
-            data.uAll(:,ii) = u;
-            data.rhoAll(ii) = rho;
+            rotData.zAll(:,ii) = z;
+            rotData.uAll(:,ii) = u;
+            rotData.rhoAll(ii) = rho;
             RAll(:,:,ii) = R;
 
             % save ADMM info
-            objVal = objVal + 0.5*sum(sum( ((R*dV-dU)*W*(R*dV-dU)').^2)) + data.lambda* data.VA(ii) * norm(R*n,1);
+            objVal = objVal + 0.5*sum(sum( ((R*dV-dU)*W*(R*dV-dU)').^2)) + rotData.lambda* rotData.VA(ii) * norm(R*n,1);
             break;
         end
     end

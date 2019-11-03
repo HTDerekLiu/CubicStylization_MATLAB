@@ -26,18 +26,20 @@ rotData.maxIter_ADMM = 100;
 ARAPData.L = cotmatrix(V,F); % cotangent 
 ARAPData.preF = []; % prefactorization of L
 [~,ARAPData.K] = arap_rhs(V,F,[],'Energy','spokes-and-rims');
-U = V; % output vertex positions
+
 
 %% Optimization
 % optimization parameters
 tolerance = 1e-3;
 maxIter = 500;
-b = 1000; % we have to pin down at least one vertex
-bc = U(b,:);
 
-objHis = [];
+U = V; % output vertex positions
 UHis = zeros(size(V,1), size(V,2), maxIter+1);
-UHis(:,:,1) = U;
+UHis(:,:,1) = U; % output vertex history
+objHis = []; % objective history
+
+b = 1000; % pinned down vertices, we have to pin down at least one vertex
+bc = U(b,:);
 
 for iter = 1:maxIter
     
@@ -54,19 +56,7 @@ for iter = 1:maxIter
     B = reshape(Bcol,[size(Bcol,1)/3 3]);
     UPre = U;
     [U,ARAPData.preF] = min_quad_with_fixed(ARAPData.L/2,B,b,bc,[],[],ARAPData.preF);
-    
-%     % plot
-%     if mod(iter-1,1) == 0
-%         figure(1)
-%         subplot(1,2,1)
-%         plotMesh(V,F,[],true);
-%         view(0,0)
-%         subplot(1,2,2)
-%         plotMesh(U,F,[],true);
-%         view(0,0)
-%         drawnow
-%     end
-    
+
     % stopping criteria
     dU = sqrt(sum((U - UPre).^2,2));
     dUV = sqrt(sum((U - V).^2,2));
@@ -76,6 +66,8 @@ for iter = 1:maxIter
         break;
     end
 end
+
+plotMesh(U,F,[],true);
 
 % outFolder = './results/';
 % mkdir(outFolder)

@@ -5,7 +5,7 @@ gp_subdirs = split(genpath('/path/to/gptoolbox/'),':');
 addpath(strjoin(gp_subdirs(~contains(gp_subdirs,'.git')),':'));
 savepath
 ```
-![Result](./result.png?raw=true "Result")
+![Result](./result.png?raw=true "Result" |  width=100)
 
 ### bibtex
 ```

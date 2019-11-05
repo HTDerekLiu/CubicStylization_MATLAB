@@ -7,6 +7,7 @@ savepath
 ```
 
 The `main_cubicStylization.m` is the demo code of the Algorithm 1 in [Liu & Jacobson 2019]. Running it with default parameters will give you the following result
+
 <img src="./result.png" width="300">
 
 

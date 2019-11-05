@@ -1,5 +1,5 @@
 # Cubic Stylization
-This is a simple prototype implementation in MATLAB of the SIGGRAPH Asia 2019 _Cubic Stylization_ [Liu & Jacobson 2019]. The only dependency is the gptoolbox ```https://github.com/alecjacobson/gptoolbox```. After cloning it, it only requires adding the path to gptoolbox by running the following commands in MATLAB
+This is a prototype implementation in MATLAB of the SIGGRAPH Asia 2019 _Cubic Stylization_ [Liu & Jacobson 2019]. The only dependency is the gptoolbox ```https://github.com/alecjacobson/gptoolbox```. After cloning it, it only requires adding the path to gptoolbox by running the following commands in MATLAB
 ```
 gp_subdirs = split(genpath('/path/to/gptoolbox/'),':');
 addpath(strjoin(gp_subdirs(~contains(gp_subdirs,'.git')),':'));

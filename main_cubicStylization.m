@@ -2,7 +2,7 @@ clear all; close all;
 addpath('./utils')
 
 % read mesh
-[V,F] = load_mesh('bunny.obj');
+[V,F] = load_mesh('./data/bunny.obj');
 nV = size(V,1);
 
 %% Precomputation
@@ -69,5 +69,3 @@ end
 %% visualize result
 t = tsurf(F,U, 'EdgeColor', 'black');
 axis equal
-
-writeOBJ('output.obj',U,F)

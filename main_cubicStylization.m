@@ -69,3 +69,5 @@ end
 %% visualize result
 t = tsurf(F,U, 'EdgeColor', 'black');
 axis equal
+
+writeOBJ('output.obj',U,F)

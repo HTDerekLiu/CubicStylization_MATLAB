@@ -1,10 +1,11 @@
 # Spectral Coarsening
-This is the MATLAB implementation of "Cubic Stylization" [Liu & Jacobson 2019]. The only dependency is the gptoolbox ```https://github.com/alecjacobson/gptoolbox```. After git cloning, cubic stylization only requires to add the path to gptoolbox by running the following commands in MATLAB
+This is the MATLAB implementation of "Cubic Stylization" [Liu & Jacobson 2019]. The only dependency is the gptoolbox ```https://github.com/alecjacobson/gptoolbox```. After cloning it, cubic stylization only requires adding the path to gptoolbox by running the following commands in MATLAB
 ```
 gp_subdirs = split(genpath('/path/to/gptoolbox/'),':');
 addpath(strjoin(gp_subdirs(~contains(gp_subdirs,'.git')),':'));
 savepath
 ```
+![Result](./result.png?raw=true "Result")
 
 ### bibtex
 ```

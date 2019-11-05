@@ -8,7 +8,7 @@ savepath
 
 The `main.m` is the demo code of the Algorithm 1 in [Liu & Jacobson 2019]. Running it with default parameters will give you the following result
 
-<img src="./result.png" width="300">
+<img src="./data/result.png" width="300">
 
 
 ### bibtex

@@ -2,7 +2,7 @@ function [RAll, objVal, rotData] = fitRotationL1(U, rotData)
 %{
     FITROTATIONL1 solves the following problem
     for each vertex i
-    Ri ? argmin Wi/2 ||Ri*dVi - dUi||^2_F + ? VAi || Ri*ni||_1
+    Ri <- argmin Wi/2*||Ri*dVi - dUi||^2_F + lambda*VAi*|| Ri*ni||_1
     where R is a rotation matrix
     
     Reference:
@@ -51,8 +51,8 @@ for ii = 1:nV
     dU = (U(hE(:,2),:) - U(hE(:,1),:))';
     Spre = dV * W * dU';
 
-    % ADMM (maxiter = 100)
-    for k = 1:1000
+    % ADMM
+    for k = 1:rotData.maxIter_ADMM
         % R step
         S = Spre + (rho * n * (z-u)');
         R = fit_rotation(S);

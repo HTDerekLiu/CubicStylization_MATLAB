@@ -27,6 +27,7 @@ ARAPData.L = cotmatrix(V,F); % cotangent
 ARAPData.preF = []; % prefactorization of L
 [~,ARAPData.K] = arap_rhs(V,F,[],'Energy','spokes-and-rims');
 
+
 %% Optimization
 % optimization parameters
 tolerance = 1e-3;
@@ -66,6 +67,6 @@ for iter = 1:maxIter
     end
 end
 
-%% visualize result
-t = tsurf(F,U, 'EdgeColor', 'black');
-axis equal
+t = tsurf(F,V);
+t.EdgeColor = 'black';
+plotMesh(U,F,[],true);

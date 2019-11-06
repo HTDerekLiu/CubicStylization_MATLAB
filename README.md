@@ -19,7 +19,7 @@ Now we should be ready to play with cubic stylization! The `main.m` is the demo 
 
 <img src="./data/result.png" width="300">
 
-Please visit [CubicStylization_Cpp](https://github.com/HTDerekLiu/CubicStylization_Cpp) for a faster implementation in C++. If any questions, please contact Hsueh-Ti Derek Liu (hsuehtil@cs.toronto.edu).
+Please visit [CubicStylization_Cpp](https://github.com/HTDerekLiu/CubicStylization_Cpp) for a faster implementation in C++. Our code is licensed under [MPL2](https://www.mozilla.org/en-US/MPL/2.0/). If any questions, please contact Hsueh-Ti Derek Liu (hsuehtil@cs.toronto.edu).
 
 ### Bibtex
 ```

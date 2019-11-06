@@ -19,8 +19,9 @@ Now we should be ready to play with cubic stylization! The `main.m` is the demo 
 
 <img src="./data/result.png" width="300">
 
+If any questions, please contact Hsueh-Ti Derek Liu (hsuehtil@cs.toronto.edu)
 
-### bibtex
+### Bibtex
 ```
 @article{Liu:CubicStyle:2019,
   title = {Cubic Stylization},

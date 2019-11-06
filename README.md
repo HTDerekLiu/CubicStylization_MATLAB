@@ -6,16 +6,16 @@ This is a prototype implementation in MATLAB based on "[Cubic Stylization](https
 ### Get Started
 We can download the implementation by cloning the repository
 ```
-git clone 
+git clone https://github.com/HTDerekLiu/CubicStylization_MATLAB.git
 ```
-The only dependency is the [gptoolbox](https://github.com/alecjacobson/gptoolbox). After cloning it, it only requires adding the path to gptoolbox by running the following commands in MATLAB
+Once we download the cubic stylization code, we should also clone the only dependency [gptoolbox](https://github.com/alecjacobson/gptoolbox) to ```/path/to/gptoolbox```. After cloning the gptoolbox, we need to add the path to gptoolbox by running the following commands in MATLAB
 ```
 gp_subdirs = split(genpath('/path/to/gptoolbox/'),':');
 addpath(strjoin(gp_subdirs(~contains(gp_subdirs,'.git')),':'));
 savepath
 ```
 
-The `main.m` is the demo code of the Algorithm 1 in [Liu & Jacobson 2019]. Running it with default parameters will give you the following result
+Now we should be ready to play with cubic stylization! The `main.m` is the demo code of the Algorithm 1 in [Cubic Stylization](https://arxiv.org/abs/1910.02926). Running it with default parameters will give you the following result
 
 <img src="./data/result.png" width="300">
 

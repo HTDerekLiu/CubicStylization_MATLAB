@@ -1,5 +1,14 @@
 # Cubic Stylization
-This is a prototype implementation in MATLAB of the SIGGRAPH Asia 2019 _Cubic Stylization_ [Liu & Jacobson 2019]. The only dependency is the gptoolbox ```https://github.com/alecjacobson/gptoolbox```. After cloning it, it only requires adding the path to gptoolbox by running the following commands in MATLAB
+Cubic stylization is a 3D stylization tool. Unlike image stylization (2D to 2D) and non-photorealistic rendering (3D to 2D), cubic stylization is a 3D to 3D stylization algorithm which takes a manifold triangle mesh as input and outputs a cubified triangle mesh. 
+
+This is a prototype implementation in MATLAB based on "[Cubic Stylization](https://www.dgp.toronto.edu/projects/cubic-stylization/)" by [Hsueh-Ti Derek Liu](https://www.dgp.toronto.edu/~hsuehtil/) and [Alec Jacobson](https://www.cs.toronto.edu/~jacobson/). 
+
+### Get Started
+We can download the implementation by cloning the repository
+```
+git clone 
+```
+The only dependency is the [gptoolbox](https://github.com/alecjacobson/gptoolbox). After cloning it, it only requires adding the path to gptoolbox by running the following commands in MATLAB
 ```
 gp_subdirs = split(genpath('/path/to/gptoolbox/'),':');
 addpath(strjoin(gp_subdirs(~contains(gp_subdirs,'.git')),':'));

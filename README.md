@@ -15,7 +15,7 @@ addpath(strjoin(gp_subdirs(~contains(gp_subdirs,'.git')),':'));
 savepath
 ```
 
-Now we should be ready to play with cubic stylization! The `main.m` is the demo code of the Algorithm 1 in [Cubic Stylization](https://arxiv.org/abs/1910.02926). Running it with default parameters will give you the following result
+Now we should be ready to play with cubic stylization! The `main.m` is the demo code of the Algorithm 1 in the [paper](https://arxiv.org/abs/1910.02926). Running it with default parameters will give you the following result
 
 <img src="./data/result.png" width="300">
 

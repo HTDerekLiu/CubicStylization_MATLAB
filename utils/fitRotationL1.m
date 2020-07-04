@@ -89,7 +89,7 @@ for ii = 1:nV
             RAll(:,:,ii) = R;
 
             % save ADMM info
-            objVal = objVal + 0.5*sum(sum( ((R*dV-dU)*W*(R*dV-dU)').^2)) + rotData.lambda* rotData.VA(ii) * norm(R*n,1);
+            objVal = objVal + 0.5*trace((R*dV-dU)*W*(R*dV-dU)') + data.lambda* data.VA(ii) * norm(R*n,1);
             break;
         end
     end
